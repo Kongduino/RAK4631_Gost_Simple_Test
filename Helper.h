@@ -35,8 +35,8 @@ void hexDump(uint8_t* buf, uint16_t len) {
         uint8_t c = buf[i + j];
         // fastest way to convert a byte to its 2-digit hex equivalent
         s[ix++] = alphabet[(c >> 4) & 0x0F];
-        s[ix++] = alphabet[c & 0x0F];
-        ix++;
+        s[ix] = alphabet[c & 0x0F];
+        ix += 2;
         if (c > 31 && c < 128) s[iy++] = c;
         else s[iy++] = '.'; // display ASCII code 0x20-0x7F or a dot.
       }
@@ -50,13 +50,23 @@ void hexDump(uint8_t* buf, uint16_t len) {
   Serial.print(F("   +------------------------------------------------+ +----------------+\n"));
 }
 
-void getRandomBytes(uint8_t *buff, uint8_t count) {
-  uint8_t r;
-  for (uint8_t i = 0; i < count; i++) {
-    buff[i] = randomStock[randomIndex++];
-    // reset random stock automatically if needed
-    if (randomIndex > 254) stockUpRandom();
+void getRandomBytes(uint8_t *buff, uint16_t count) {
+  // This should be faster than the method commented out below
+  uint16_t r = count, index = 0, available = 256 - randomIndex;
+  while (r > available) {
+    memcpy(buff + index, randomStock + randomIndex, available);
+    stockUpRandom(); // randomIndex is reset to 0
+    r -= available;
+    index += available;
+    available = 256;
   }
+  if (r > 0)
+    memcpy(buff + index, randomStock + randomIndex, r);
+//   for (uint8_t i = 0; i < count; i++) {
+//     buff[i] = randomStock[randomIndex++];
+//     // reset random stock automatically if needed
+//     if (randomIndex > 254) stockUpRandom();
+//   }
 }
 
 bool compareBlocks(uint8_t *A, uint8_t *B, uint16_t ln) {
