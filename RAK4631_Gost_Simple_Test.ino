@@ -59,6 +59,7 @@ void setup() {
                     LORA_SYMBOL_TIMEOUT, LORA_FIX_LENGTH_PAYLOAD_ON,
                     0, true, 0, 0, LORA_IQ_INVERSION_ON, true);
   stockUpRandom();
+  hexDump(randomStock, 256);
   Radio.Standby();
 }
 
