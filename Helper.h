@@ -62,7 +62,10 @@ void getRandomBytes(uint8_t *buff, uint16_t count) {
   }
   if (r == 0) return;
   memcpy(buff + index, randomStock + randomIndex, r);
-  randomIndex += r;
+  // check whether we have used up the stock of random bytes
+  if (randomIndex + r == 256) stockUpRandom();
+  else randomIndex += r;
+  
 //   for (uint8_t i = 0; i < count; i++) {
 //     buff[i] = randomStock[randomIndex++];
 //     // reset random stock automatically if needed
