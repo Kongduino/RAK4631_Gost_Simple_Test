@@ -82,8 +82,8 @@ void GostTest() {
   Serial.println("GOST test");
   unsigned char IV[8];
   uint32_t t0, t1;
-  getRandomBytes(IV, 8);
-  getRandomBytes(plaintext, 72);
+  getRandomBytes(IV, (uint16_t)8);
+  getRandomBytes(plaintext, (uint16_t)72);
   Serial.print("IV ="); for (uint8_t i = 0; i < 8; i++) Serial.printf(" %02x", IV[i]); Serial.print("\n");
   Serial.println("Plaintext:");
   hexDump(plaintext, 72);
